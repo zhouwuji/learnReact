@@ -1,4 +1,5 @@
 import React from 'react'
+import { useMediaQuery } from '@material-ui/core';
 import {
     Edit,
     SimpleForm,
@@ -7,7 +8,11 @@ import {
     ReferenceInput,
     SelectInput,
     Create,
-    SimpleList
+    SimpleList,
+    Datagrid,
+    TextField,
+    ReferenceField,
+    EditButton
 } from 'react-admin';
 
 const PostEdit = props => (
@@ -23,15 +28,30 @@ const PostEdit = props => (
     </Edit>
 );
 
-const PostList = (props) => (
-    <List {...props}>
-        <SimpleList
-            primaryText={record => record.title}
-            secondaryText={record => `${record.views} views`}
-            tertiaryText={record => new Date(record.published_at).toLocaleDateString()}
-        />
-    </List>
-);
+const PostList = (props) => {
+    const isSmall = useMediaQuery(theme => theme.breakpoints.down('sm'));
+    return (
+        <List {...props}>
+            {isSmall ? (
+                <SimpleList
+                    primaryText={record => record.title}
+                    secondaryText={record => `${record.views} views`}
+                    tertiaryText={record => new Date(record.published_at).toLocaleDateString()}
+                />
+            ) : (
+                <Datagrid>
+                    <TextField source="id"/>
+                    <ReferenceField label="User" source="userId" reference="users">
+                        <TextField source="name"/>
+                    </ReferenceField>
+                    <TextField source="title"/>
+                    <TextField source="body"/>
+                    <EditButton/>
+                </Datagrid>
+            )}
+        </List>
+    );
+}
 
 const PostCreate = props => (
     <Create {...props}>
