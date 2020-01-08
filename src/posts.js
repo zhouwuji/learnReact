@@ -4,13 +4,10 @@ import {
     SimpleForm,
     TextInput,
     List,
-    Datagrid,
-    TextField,
-    ReferenceField,
     ReferenceInput,
     SelectInput,
     Create,
-    Filter
+    SimpleList
 } from 'react-admin';
 
 const PostEdit = props => (
@@ -26,25 +23,13 @@ const PostEdit = props => (
     </Edit>
 );
 
-const PostFilter = (props) => (
-    <Filter {...props}>
-        <TextInput label="Search" source="q" alwaysOn/>
-        <ReferenceInput label="User" source="userId" reference="users" allowEmpty>
-            <SelectInput optionText="name"/>
-        </ReferenceInput>
-    </Filter>
-);
-
-const PostList = props => (
-    <List {...props} filters={<PostFilter/>}>
-        <Datagrid rowClick="edit">
-            <ReferenceField source="userId" reference="users">
-                <TextField source="name"/>
-            </ReferenceField>
-            <TextField source="id"/>
-            <TextField source="title"/>
-            <TextField source="body"/>
-        </Datagrid>
+const PostList = (props) => (
+    <List {...props}>
+        <SimpleList
+            primaryText={record => record.title}
+            secondaryText={record => `${record.views} views`}
+            tertiaryText={record => new Date(record.published_at).toLocaleDateString()}
+        />
     </List>
 );
 
